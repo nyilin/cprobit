@@ -1,0 +1,9 @@
+S3method(print,cprobit)
+S3method(summary,cprobit)
+export(cprobit)
+importFrom(car,bcPower)
+importFrom(nortest,lillie.test)
+importFrom("graphics", "par")
+importFrom("stats", "as.formula", "binomial", "dnorm", "glm",
+           "model.matrix", "optimHess", "optimize", "pnorm", "qqline",
+           "qqnorm")
