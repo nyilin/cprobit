@@ -7,7 +7,7 @@ Maintainer: Ning Yilin <ningyilinnyl@gmail.com>
 Depends: R (>= 3.5.0)
 Imports: car, nortest
 Description: Implements the three-step workflow for robust analysis of change in 
-    two repeated measurements of continuous outcomes (Ning et al., in press).
+    two repeated measurements of continuous outcomes.
 License: LGPL-3
 Encoding: UTF-8
 LazyData: true
