@@ -3,6 +3,8 @@ S3method(summary,cprobit)
 export(cprobit)
 importFrom(car,bcPower)
 importFrom(nortest,lillie.test)
+import(ggplot2)
+import(gridExtra)
 importFrom("graphics", "par")
 importFrom("stats", "as.formula", "binomial", "dnorm", "glm",
            "model.matrix", "optimHess", "optimize", "pnorm", "qqline",

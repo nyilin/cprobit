@@ -358,11 +358,10 @@ cprobit <- function(formula, dat, index, transform = NULL, lambda = NA,
 #' @param plot Wether residual qq-plots should be plotted. Default is \code{FALSE}.
 #' @param ... Additional arguments affecting the summary produced (not yet
 #'   implemented).
+#' @import ggplot2, gridExtra
 #' @export
 summary.cprobit <- function(object, plot = FALSE, ...) {
   stopifnot(inherits(object, "cprobit"))
-  n_plot <- ifelse(is.null(object$Step3), 1, 2)
-  par(mfrow = c(1, n_plot))
   cat("## Results from Step 2:\n\n")
   cat("Lilliefors test p-value for normality assumption\n",
       sprintf("    without transforamtion: %.3f", object$Step2$resid_pval),
@@ -374,10 +373,6 @@ summary.cprobit <- function(object, plot = FALSE, ...) {
   coef_step2[, -1] <- apply(coef_step2[, -1], 2, function(x) round(x, 3))
   print(coef_step2)
   cat("\n")
-  if (plot) {
-    qqnorm(object$Step2$resid, main = "Normal qq-plot for observed outcome")
-    qqline(object$Step2$resid)
-  }
   if (!is.null(object$Step3)) {
     cat("## Results from Step 3:\n\n")
     cat("Box-Cox transforamtion on the outcome:\n\n")
@@ -399,7 +394,33 @@ summary.cprobit <- function(object, plot = FALSE, ...) {
       qqline(object$Step3$resid)
     }
   }
-  par(mfrow = c(1, 1))
+  # Make qq-plots
+  if (plot) {
+    common_theme <- theme_bw() +
+      theme(panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank())
+    # Use `aes_string` instead of `aes` to avoid issue of "global variable y not
+    # found"
+    qq_step2 <- ggplot(data = data.frame(y = object$Step2$resid),
+                       aes_string(sample = "y")) +
+      stat_qq() +
+      stat_qq_line() +
+      labs(x = "Theoretical Quantiles", y = "Sample Quantiles",
+           title = "Normal qq-plot for observed outcome") +
+      common_theme
+    if (is.null(object$Step3)) {
+      qq_step2
+    } else {
+      qq_step3 <- ggplot(data = data.frame(y = object$Step3$resid),
+                         aes_string(sample = "y")) +
+        stat_qq() +
+        stat_qq_line() +
+        labs(x = "Theoretical Quantiles", y = "Sample Quantiles",
+             title = "Normal qq-plot for transformed outcome") +
+        common_theme
+      grid.arrange(qq_step2, qq_step3, ncol = 2)
+    }
+  }
 }
 #' @rdname cprobit
 #' @param x Model fitted using \code{cprobit} function.
